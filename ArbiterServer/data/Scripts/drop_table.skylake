@@ -1,0 +1,16 @@
+################################ SKYLAKE DROP_TABLE SCRIPT 1.0 ######################
+####### FORMULA [if((rand() % mainPoolRage) <= (needPool * (internalRate + rate - (tolerance / abs(targetLevel - level))))){SUCCESS}] ##########
+#mobId = 0 => general, on all area
+$mainPoolRange=1000
+
+#@[areaId]:[huntinZoneId]-[mobId]:[internalRate]:[targetLevel]
+#{
+#	drop:[needPool]-itemId:stackCount,itemId:stackCount
+#}
+
+@[7001]:[7898]-[123]:[0.0]:[15]
+{
+	gold:1000
+	drop:[50]-447:50
+	drop:[200]-447:5,88079:1,88063:1
+}

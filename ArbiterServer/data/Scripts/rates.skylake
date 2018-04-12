@@ -1,0 +1,13 @@
+################################ SKYLAKE DROP_TABLE SCRIPT 1.0 ######################
+$dropRate= 1.0
+$expRate= 1.0
+$jackpotRate= 1.0
+$creditRate= 1.0
+$enchantRate= 1.0
+$awakeningRate= 1.0
+$levelCap= 65
+$dropLevelInterval= 11
+$goldRate= 1.0
+$questExpRate= 1.0
+$questGoldRate= 1.0
+$questCreditRate= 1.0

@@ -1,0 +1,58 @@
+##########~Sky-Lake~ Config v[1.0]############
+
+server.id=1
+server.name=SKY-LAKE
+
+server.ip=127.0.0.1
+server.port=10001
+
+##### CHAT ######
+server.chat.enabled=1
+server.chat.enable_gm_commands=1
+server.chat.player_can_user_use_gm_commands=1
+#################
+
+##### MYSQL #####
+server.mysql.ip=	 		127.0.0.1
+server.mysql.port=			3306
+server.mysql.db_name=		tera_q
+server.mysql.username=		root
+server.mysql.password=		root
+#################
+
+############# PLAYER ######################
+#16483.5703125 1327.60498046875 -4424.9501953125
+player.start_positon= 		16483.5703125 1327.60498046875 -4424.9501953125
+player.start_heading= 		0
+
+player.start_channel= 					1
+player.start_area= 						1
+player.start_continent=					5
+player.start_world_map_world_id= 		1
+player.start_world_map_guard_id= 		25
+player.start_world_map_section_id= 		599001
+
+player.inventory.start_items=			1,2,3,4,5
+player.inventory.start_slots_count=		72
+player.inventory.max_glod= 				0
+player.inventory.start_gold= 			19960000000
+player.inventory.enable_soulbinding=    0
+###########################################
+
+######## WORLD SERVER ############
+#0 to set the default port (7788)
+world_server.listening_port=0
+world_server.listening_ip=127.0.0.1
+##################################
+
+##### DATA DIR ######
+server.dir.abnormalities=
+server.dir.customizing_items=
+server.dir.items=            				.//Data//item_data_5402.bin
+server.dir.passivities=      				.//Data//passivity_data_5402.bin
+server.dir.passivity_categories= 			.//Data//passivity_category_data_5402.bin
+server.dir.equipment_data=					.//Data//equipment_data_5402.bin
+server.dir.equipment_enchant_data=        	.//Data//equipment_enchant_data_5402.bin
+server.dir.scripts=							.//Data//Scripts
+#####################
+
