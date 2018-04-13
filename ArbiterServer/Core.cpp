@@ -7,38 +7,21 @@
 #include "../DataLayer/DBO.h"
 #include "../Network/NetworkIO.h"
 
+#include "Structs.h"
+#include "ServerActions.h"
+
 #include <memory>
 
 #define WORKERROUTINE __stdcall
 typedef  DWORD(WORKERROUTINE *WorkerSubroutine)(Work*);
 
-struct ArbiterState {
-	WSADATA wsa;
-	SOCKET acceptSock;
-
-	HANDLE workQueue;
-	UINT32  workerThreadsCount;
-	HANDLE * workerThreads;
-	HANDLE acceptThread;
-	WSAEVENT acceptEvent;
-	HANDLE shutdownEvent;
-
-	a_uint32 connectionsCount;
-
-} static arbiterState;
 WorkerSubroutine workerSubroutines[WorkerItemType_MAX];
-
 CRITICAL_SECTION	connectionsLock;
 static SimpleStack	freeIdsStack;
 UINT8 recvBuffers[MAX_CONNECTIONS][CONNECTION_RECV_BUFFER_LEN];
 
-__declspec(thread) struct WorkerState {
-	sql::Connection * mysqlConnection;
-	DWORD numberOfBytesTransfered;
-	UINT64 completionKey;
-	Work * work;
-
-} wState; 
+ArbiterState arbiterState;
+__declspec(thread) WorkerState wState;
 
 Connection * GetNewConnection() noexcept {
 	register Connection * out = nullptr;
@@ -186,10 +169,12 @@ DWORD WORKERROUTINE _onConnectInit(SendInit * w) {
 	}*/
 
 	net.session.GenerateSeverKeys();
+	net.recvState = EConnectionRecvState_ClientKey1;
+	net.wsaBuff.len = 128;
 
-	INT32 result = SendServerKey(&net, 1);
+	INT32 result = PostRecv(&net);
 	if (result) {
-		//@TODO log
+		//@TODO log 
 		return 1;
 	}
 
@@ -200,23 +185,37 @@ DWORD WORKERROUTINE _onServerKeySent(SendKey * w) {
 
 	if (!net.HasFlag(EConnectionNetFlags_SentKey1)) {
 		net.AddFlag(EConnectionNetFlags_SentKey1);
-
-		net.recvState = EConnectionRecvState_ClientKey1;
-	}
-	else if (!net.HasFlag(EConnectionNetFlags_SentKey2)) {
-		net.AddFlag(EConnectionNetFlags_SentKey2);
-
 		net.recvState = EConnectionRecvState_ClientKey2;
+
+		net.wsaBuff.len = 128;
+		INT32 result = PostRecv(&net); //recv client key 2
+		if (result) {
+			//@TODO log
+			return 1;
+		}
+
+		return 0;
 	}
 
-	net.wsaBuff.len = 128;
-	INT32 result = PostRecv(&net); //recv client key
+	if (!net.HasFlag(EConnectionNetFlags_SentKey2)) {
+		net.AddFlag(EConnectionNetFlags_SentKey2);
+	}
+
+	//connection is ready
+	net.AddFlag(EConnectionNetFlags_Ready);
+
+	if (!net.session.init_session()) {
+		//@TODO log
+		return 2;
+	}
+
+	net.recvState = EConnectionRecvState_PacketHead;
+	net.wsaBuff.len = 4; //head size
+	INT32 result = PostRecv(&net); //recv first packet head
 	if (result) {
 		//@TODO log
 		return 1;
 	}
-
-	printf("Sent server key!\n");
 
 	return 0;
 
@@ -229,12 +228,12 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 	case EConnectionRecvState_PacketHead: {
 
 		//@TODO optimize 
-		UINT8 *data = (UINT8*)w->wsaBuff.buf;
+		UINT8 *data = (UINT8*)w->recvBuffer;
 
 		w->session.Decrypt(data, 4);
 
-		w->packetSize = (UINT16)((data[0] << 8) | data[1]);
-		w->opcode = (UINT16)((data[2] << 8) | data[3]);
+		w->packetSize = (UINT16)((data[1] << 8) | data[0]);
+		w->opcode = (ClientOpcodes)((data[3] << 8) | data[2]);
 
 		w->wsaBuff.len = w->packetSize - 4;
 		w->wsaBuff.buf = (CHAR*)w->recvBuffer + 4;
@@ -255,9 +254,9 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 
 		UINT8 *data = (UINT8*)w->wsaBuff.buf;
 
-		register UINT16 delta = (UINT16)(w->packetSize - wState.numberOfBytesTransfered);
+		register UINT16 delta = (UINT16)(w->packetSize - wState.numberOfBytesTransfered) - 4;
 		if (delta) { //get remaining packet data
-			data += wState.numberOfBytesTransfered + 4;
+			data += wState.numberOfBytesTransfered;
 
 			w->wsaBuff.buf = (CHAR*)data;
 			w->wsaBuff.len = delta;
@@ -277,14 +276,31 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 		}
 
 		//got whole packet , decrypt it and handle it
-		w->session.Decrypt(data + 4, w->packetSize - 4);
+		w->session.Decrypt(w->recvBuffer + 4, w->packetSize - 4);
 
+		ServerAction action = GetAction(w->opcode);
+		if (action) {
+			INT32 result = action(&wState);
+			if (result) {
+				//@TODO log
+
+				result = ReleaseConnection(w->id);
+				if (result) {
+					//@TODO log
+				}
+			}
+		}
+		else{
+			printf("UNKNOWN OPCODE[%d]\n", w->opcode);
+		}
 		//@TODO , create HandlePacketAsyncWorkItem to handle packets async if not in_lobby
 
 
 		//@TODO get opcode handler and runt it sync
 
 		w->recvState = EConnectionRecvState_PacketHead;
+		w->wsaBuff.len = 4;
+		w->wsaBuff.buf = (CHAR*)w->recvBuffer;
 		INT32 result = PostRecv(w);
 		if (result) {
 			result = ReleaseConnection(w->id);
@@ -296,7 +312,11 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 		}
 	}break;
 	case EConnectionRecvState_ClientKey1: {
-		result = SendServerKey(w, 2);
+		if (memcpy_s(w->session.ClientKey1, 128, w->recvBuffer, 128)) {
+			return 3;
+		}
+
+		result = SendServerKey(w, 1);
 		if (result) {
 			//@TODO log
 			return 1;
@@ -304,21 +324,15 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 
 	}break;
 	case EConnectionRecvState_ClientKey2: {
-		result = w->session.init_session();
-		if (!result) {
-			//@TODO log
-			return 2;
+		if (memcpy_s(w->session.ClientKey2, 128, w->recvBuffer, 128)) {
+			return 4;
 		}
 
-		w->recvState = EConnectionRecvState_PacketHead;
-
-		w->wsaBuff.len = 4;
-		result = PostRecv(w); //recv first packet head
+		result = SendServerKey(w, 2);
 		if (result) {
 			//@TODO log
-			return 3;
+			return 1;
 		}
-
 	}	break;
 	default:
 		//@TODO log
@@ -385,7 +399,7 @@ DWORD WINAPI ArbiterWorkerRoutine(void* argv) {
 	return 0;
 }
 
-void InitiWorkerSoubroutines() {
+void InitWorkerSoubroutines() {
 	workerSubroutines[WorkItemType_RecvFromConnection] = (WorkerSubroutine)_onConnectionRecv;
 	workerSubroutines[WorkItemType_SendToConnection] = (WorkerSubroutine)_onDataSentToConnection;
 	workerSubroutines[WorkItemType_NewConnection] = (WorkerSubroutine)_onNewConnection;
@@ -396,6 +410,8 @@ void InitiWorkerSoubroutines() {
 }
 const BOOL InitArbiterCore() {
 	InitializeCriticalSection(&connectionsLock);
+	InitWorkerSoubroutines();
+	InitServerActions();
 
 	if (!freeIdsStack.InitStack(MAX_CONNECTIONS)) {
 		printf("Failed to init FreeIdsStack\n");
@@ -470,8 +486,6 @@ const BOOL InitArbiterCore() {
 		printf("Failed to create shutdown event\n");
 		return 7;
 	}
-
-	InitiWorkerSoubroutines();
 
 	MySqlDriver * mysqlDriver = GetMysqlDriver();
 	if (!mysqlDriver->InitDriver(

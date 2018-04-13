@@ -7,12 +7,12 @@
 
 //@TODO get an allocator for the send work items
 
-const INT32 INIT_BUFFER[4]{ 1,0,0,0 };
+const CHAR INIT_BUFFER[4]{ 1,0,0,0 };
 
 const INT32 StartInitProcess(ConnectionNetPartial* conn) {
 	SendInit* packet = new SendInit(conn->id);
 
-	packet->buff.len = 4 * sizeof(INT32);
+	packet->buff.len = 4;
 	packet->buff.buf = (CHAR*)INIT_BUFFER;
 
 	DWORD bytesSent = 0;

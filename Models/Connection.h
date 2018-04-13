@@ -11,6 +11,7 @@
 #include "../Base/WorkItems.h"
 
 #include "../Network/Crypt.h"
+#include "../Opcodes/Opcodes.h"
 
 struct Player;
 
@@ -64,7 +65,7 @@ struct ConnectionNetPartial :Work {
 	DWORD	flags;
 
 	UINT16	recvState;
-	UINT16	opcode;
+	ClientOpcodes	opcode;
 	UINT16  packetSize;
 	UINT8*	recvBuffer;
 	WSABUF	wsaBuff;

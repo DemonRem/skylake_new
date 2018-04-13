@@ -364,6 +364,9 @@ bool Session::fill_key(UINT8 key[128], UINT8 key_id)
 bool Session::init_session()
 {
 	UINT8 TmpKey1[128], TmpKey2[128];
+	Encryptor = Cryptor();
+	Decryptor = Cryptor();
+
 
 	ShiftKey(TmpKey1, ServerKey1, 67, true);
 	XorKey(TmpKey2, TmpKey1, 128, ClientKey1, 128);
@@ -377,5 +380,6 @@ bool Session::init_session()
 	Decryptor.ApplyCryptor(EncryptKey, 128);
 
 	Encryptor.GenerateKey(EncryptKey);
+
 	return true;
 }

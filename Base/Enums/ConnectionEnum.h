@@ -21,9 +21,7 @@ enum EConnectionNetFlags : ULONG {
 	EConnectionNetFlags_RecvKey1 = 1 << 2,
 	EConnectionNetFlags_SentKey2 = 1 << 3,
 	EConnectionNetFlags_RecvKey2 = 1 << 4,
-
-
-	EConnectionFlags_Ready = 1 << 5,
+	EConnectionNetFlags_Ready = 1 << 5,
 
 };
 
