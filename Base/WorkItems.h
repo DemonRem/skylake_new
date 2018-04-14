@@ -4,6 +4,8 @@
 #include "typeDefs.h"
 #include "Enums\WorkItemType.h"
 
+#include "../Base/Stream.h"
+
 struct Connection;
 
 struct Work {
@@ -46,9 +48,10 @@ struct SendKey : Work {
 
 struct SendToConnection : Work {
 	SendToConnection(UID connId) :Work(WorkItemType_SendToConnection), connectionId(connId) {}
-	
+
 	const UID connectionId;
 	WSABUF buff;
 };
+
 
 #endif

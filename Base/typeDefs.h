@@ -25,6 +25,26 @@ typedef unsigned __int64    UINT64, *PUINT64;
 #define UINT32_MAX			0xffffffffui32
 #define UINT64_MAX			0xffffffffffffffffui64
 
+#define r_8(_raw)	(INT8) (_raw)[0]
+#define r_u8(_raw)	(UINT8)(_raw)[0]
+#define r_16(_raw)	(INT16)((_raw)[1] << 8) | (_raw)[0]
+#define r_u16(_raw) (UINT16)((_raw)[1] << 8) | (_raw)[0]
+#define r_32(_raw)	(LONG)(((_raw)[3] << 24) | ((_raw)[2] << 16) | ((_raw)[1] << 8) | (_raw)[0])
+#define r_u32(_raw) (ULONG)(((_raw)[3] << 24) | ((_raw)[2] << 16) | ((_raw)[1] << 8) | (_raw)[0])
+#define r_64(_raw)	(INT64)(r_32((_raw) + 4) | r_32((_raw)))
+#define r_u64(_raw) (UINT64)(r_32((_raw) + 4) | r_32((_raw)))
+#define r_single(_raw) (*(float*)(_raw))
+#define r_double(_raw) (*(double*)(_raw))
+
+#define w_8(_raw, data)		(*((INT8*)_raw)		= (data))
+#define w_u8(_raw, data)	(*((UINT8*)_raw)	= (data))
+#define w_16(_raw, data)	(*((INT16*)_raw)	= (data))
+#define w_u16(_raw, data)	(*((UINT16*)_raw)	= (data))
+#define w_32(_raw, data)	(*((LONG*)_raw)		= (data))
+#define w_u32(_raw, data)	(*((ULONG*)_raw)	= (data))
+#define w_64(_raw, data)	(*((INT64*)_raw)	= (data))
+#define w_u64(_raw, data)	(*((UINT64*)_raw)	= (data))
+
 typedef union _UID {
 	struct {
 		UINT32 hi;
@@ -32,11 +52,19 @@ typedef union _UID {
 	};
 	UINT64 id;
 
+	_UID() :id(0) {}
+	_UID(UINT64 id) {
+		this->id = id;
+	}
+
 	inline const bool operator==(_UID& id) const noexcept {
 		return this->id == id.id;
 	}
 	inline const bool operator==(UINT64& id) const noexcept {
 		return this->id == id;
+	}
+	inline void operator=(UINT64& id)  noexcept {
+		this->id = id;
 	}
 
 } UID;

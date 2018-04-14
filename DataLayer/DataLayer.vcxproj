@@ -126,6 +126,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AccountDBO.cpp" />
     <ClCompile Include="DbHandler.cpp" />
     <ClCompile Include="DBO.cpp" />
     <ClCompile Include="MySqlDriver.cpp" />

@@ -280,7 +280,7 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 
 		ServerAction action = GetAction(w->opcode);
 		if (action) {
-			INT32 result = action(&wState);
+			INT32 result = action(&wState, w);
 			if (result) {
 				//@TODO log
 
@@ -293,6 +293,11 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 		else{
 			printf("UNKNOWN OPCODE[%d]\n", w->opcode);
 		}
+
+#ifdef PRINT_PACKETS
+		print_packet(w->recvBuffer, w->packetSize);
+#endif
+
 		//@TODO , create HandlePacketAsyncWorkItem to handle packets async if not in_lobby
 
 

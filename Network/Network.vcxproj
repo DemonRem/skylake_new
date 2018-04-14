@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Crypt.h" />
+    <ClInclude Include="NetStructs.h" />
     <ClInclude Include="NetworkIO.h" />
   </ItemGroup>
   <ItemGroup>

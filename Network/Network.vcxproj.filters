@@ -21,6 +21,9 @@
     <ClInclude Include="NetworkIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NetStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Crypt.cpp">

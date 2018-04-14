@@ -17,10 +17,10 @@ struct Player;
 
 struct Account {
 	UID		id;
+	UID		dbId;
 	DWORD	flags;
-
-	char username[40];
-	char password[40];
+	UINT64  remainingPlayTimeUTC;
+	UINT64  lastOnlineUTC;
 
 	inline const BOOL HasFlag(const EAccountFlags flag) const noexcept {
 		return flags & flag;
@@ -55,7 +55,6 @@ struct Connection {
 		flags &= !flag;
 	}
 };
-
 struct ConnectionNetPartial :Work {
 
 	ConnectionNetPartial() : Work(WorkItemType_RecvFromConnection) {}

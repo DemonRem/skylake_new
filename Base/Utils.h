@@ -18,4 +18,10 @@ INT32	getGenderFromTemplateId(INT32 templateId);
 
 UINT32  get_skill_base_id(UINT32 skillId);
 
+void print_packet(UINT8 * data, UINT16 size);
+void print_packet_hex(UINT8 * data, UINT16 size);
+void wchar_to_little_endian(UINT16 *wchar);
+void hwstr_to_str(char * wchar, char*out, size_t maxCount);
+void nwstr_to_str(char * wchar, char*out, size_t maxCount);
+
 #endif

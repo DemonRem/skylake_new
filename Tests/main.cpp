@@ -8,7 +8,24 @@
 #include "RandomTest.h" 
 #include "StatsTest.h" 
 
+#include "../Base/Utils.h"
+
 #include <chrono>
+
+
+void ReadWriteTest() {
+	
+	UINT8 data[15];
+
+	w_64(data, 23);
+
+	print_packet_hex(data, 15);
+
+	INT64 a = r_64(data);
+
+	printf("%d\n", a);
+	return;
+}
 
 int main()
 {
@@ -17,6 +34,7 @@ int main()
 	/*DBOTest();*/
 	//RandomTest();
 	//StatsTest();
+	ReadWriteTest();
 	
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;

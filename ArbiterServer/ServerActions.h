@@ -2,12 +2,10 @@
 #define SERVER_ACTIONS_H
 
 #include "../Base/typeDefs.h"
-#include "../Opcodes/Opcodes.h"
 
-#include "Structs.h"
-
-typedef INT32(*ServerAction)(WorkerState * wState);
-
+struct WorkerState;
+struct ConnectionNetPartial;
+typedef INT32(*ServerAction)(WorkerState * wState, ConnectionNetPartial* net);
 
 
 INT32 InitServerActions();
