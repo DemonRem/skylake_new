@@ -2,6 +2,7 @@
 
 #include "../Models/Connection.h"
 #include "../Base/WorkItems.h"
+#include "../Base/MemoryStreams.h"
 
 #include <memory>
 
@@ -81,6 +82,24 @@ const INT32 PostSend(ConnectionNetPartial * conn, UINT8 * data, UINT32 size) {
 	}
 
 	packet.release();
+	return 0;
+}
+const INT32 PostSendStream(ConnectionNetPartial * conn, SendStream & pPacket) {
+	SendStream * packet = new SendStream(pPacket);
+	DWORD bytesSent = 0;
+	INT32 result = WSASend(conn->sock, &packet->buff, 1, &bytesSent, 0, (OVERLAPPED*)packet, NULL);
+	if (result == SOCKET_ERROR && ((result = WSAGetLastError()) != WSA_IO_PENDING)) {
+		packet->Release();
+		delete packet;
+		return 1;
+	}
+	else if (!result && !bytesSent) {
+		packet->Release();
+		delete packet;
+		return 2;
+	}
+
+	pPacket.Release();
 	return 0;
 }
 

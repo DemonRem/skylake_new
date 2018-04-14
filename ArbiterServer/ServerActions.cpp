@@ -11,7 +11,12 @@
 #include "../Network/NetworkIO.h"
 #include "../Base/IOCP.h"
 
+#include "../Base/MemoryStreams.h"
+
 #define OP_DUMP
+
+const char SERVER_LOGIN_NAME[] = "PlanetSL";
+constexpr const int SERVER_LOGIN_NAME_SIZE = sizeof(SERVER_LOGIN_NAME);
 
 extern ArbiterState arbiterState;
 ServerAction actions[OPCODE_MAX];
@@ -40,35 +45,81 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	char name[PLAYER_NAME_MAX_LENGTH];
 	nwstr_to_str(wname, name, PLAYER_NAME_MAX_LENGTH);
 	char* ticket = (char*)(net->recvBuffer + ticketOffset);
+	ticket[32] = 0x00;
 
 	INT32 result = LoginArbiter(name, ticket, w->mysqlConnection, account);
 
 	if (result == 1) { //account is online already
-		/*SendStream * packet = new SendStream(23);
-		Stream &data = packet->s;
-		data.WriteInt16(23);
-		data.WriteInt16(S_LOGIN_ARBITER);
-		data.WriteInt16(0);
-		data.WriteInt16(262);
-		data.WriteUInt8(0);
-		data.WriteInt32(8);
-		data.WriteInt32(0);
-		data.WriteUInt8(0);
-		data.WriteInt16(1);
-		data.WriteInt16(0);
-		data.WriteUInt8(0);
-		
-
-
-		result = PostSend(net, data._raw, data._size);*/
+		//@TODO send back ...already logged in
 	}
 	else if (result) {
-
-
-
+		return result;
 	}
 
-	return result;
+	SendStream packet = SendStream(5);
+	packet.connectionId = net->id;
+
+	packet.Resize(5);
+	packet.WriteInt16(5);
+	packet.WriteInt16(S_CHECK_VERSION);
+	packet.WriteUInt8(1);
+	result = PostSendStream(net, packet);
+	if (result) {
+		//@TODO log
+		return 1;
+	}
+
+	packet.Resize(5);
+	packet.WriteInt16(5);
+	packet.WriteInt16(S_LOADING_SCREEN_CONTROL_INFO);
+	packet.WriteUInt8(0);
+	result = PostSendStream(net, packet);
+	if (result) {
+		//@TODO log
+		return 1;
+	}
+
+	packet.Resize(12);
+	packet.WriteInt16(12);
+	packet.WriteInt16(S_REMAIN_PLAY_TIME);
+	packet.WriteInt32(6);
+	packet.WriteInt32(0);
+	result = PostSendStream(net, packet);
+	if (result) {
+		//@TODO log
+		return 1;
+	}
+
+	packet.Resize(23);
+	packet.WriteInt16(23);
+	packet.WriteInt16(S_LOGIN_ARBITER);
+	packet.WriteInt16(1);
+	packet.WriteInt16(0); //unk?
+	packet.WriteInt32(0);
+	packet.WriteInt16(0);
+	packet.WriteInt32(6);
+	packet.WriteInt32(0);
+	packet.WriteUInt8(0);
+	result = PostSendStream(net, packet);
+	if (result) {
+		//@TODO log
+		return 1;
+	}
+
+	packet.Resize(14 + ((SERVER_LOGIN_NAME_SIZE + 1) * 2));
+	packet.WriteInt16(0);
+	packet.WriteInt16(S_LOGIN_ACCOUNT_INFO);
+	packet.WriteInt16(14); // server name offset
+	packet.WriteInt64(3656625); //??? SERVER_ID??
+	packet.WriteString(SERVER_LOGIN_NAME);
+	packet.WritePos();
+	result = PostSendStream(net, packet);
+	if (result) {
+		//@TODO log
+		return 1;
+	}
+
+	return 0;
 }
 
 INT32 InitServerActions() {

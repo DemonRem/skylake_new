@@ -6,6 +6,7 @@
 #include "../Config/ArbiterConfig.h"
 #include "../DataLayer/DBO.h"
 #include "../Network/NetworkIO.h"
+#include "../Base/MemoryStreams.h"
 
 #include "Structs.h"
 #include "ServerActions.h"
@@ -357,6 +358,15 @@ DWORD WORKERROUTINE _onDataSentToConnection(SendToConnection * w) {
 
 	return 0;
 }
+DWORD WORKERROUTINE _onSentStreamToConnection(SendStream * w) {
+	printf("sent packet!!\n");
+	if (!w->HasWorkFlag(EWorkItemFlags_ShouldNotDeleteData) && w->buff.buf) {
+		delete[] w->buff.buf;
+		w->buff.buf = nullptr;
+	}
+
+	return 0;
+}
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -410,8 +420,7 @@ void InitWorkerSoubroutines() {
 	workerSubroutines[WorkItemType_NewConnection] = (WorkerSubroutine)_onNewConnection;
 	workerSubroutines[WorkItemType_SendInit] = (WorkerSubroutine)_onConnectInit;
 	workerSubroutines[WorkItemType_SendKey] = (WorkerSubroutine)_onServerKeySent;
-
-
+	workerSubroutines[WorkItemType_SendStream] = (WorkerSubroutine)_onSentStreamToConnection;
 }
 const BOOL InitArbiterCore() {
 	InitializeCriticalSection(&connectionsLock);

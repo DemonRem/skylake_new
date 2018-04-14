@@ -2,9 +2,10 @@
 #define WORK_ITEMS_H
 
 #include "typeDefs.h"
-#include "Enums\WorkItemType.h"
-
+#include "Enums/WorkItemType.h"
 #include "../Base/Stream.h"
+#include "../Base/win32.h"
+#include "../Base/winsock.h"
 
 struct Connection;
 

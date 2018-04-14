@@ -129,7 +129,7 @@
     <ClInclude Include="Stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SendStream.h">
+    <ClInclude Include="MemoryStreams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

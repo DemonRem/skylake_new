@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8283AB57-DEE4-4CDE-91A9-C2E93AF4BE73}</ProjectGuid>
     <RootNamespace>Base</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,7 +139,7 @@
     <ClInclude Include="IOCP.h" />
     <ClInclude Include="MathStructs.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="SendStream.h" />
+    <ClInclude Include="MemoryStreams.h" />
     <ClInclude Include="ServerDefs.h" />
     <ClInclude Include="SimpleStack.h" />
     <ClInclude Include="Stream.h" />

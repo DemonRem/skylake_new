@@ -3,6 +3,8 @@
 
 #include "../Base/typeDefs.h"
 
+#include "../Base/win32.h"
+#include "../Base/MemoryStreams.h"
 #include "SimpleStackTest.h"
 #include "DBOTest.h"
 #include "RandomTest.h" 
@@ -15,15 +17,12 @@
 
 void ReadWriteTest() {
 	
-	UINT8 data[15];
+	SendStream s(0);
 
-	w_64(data, 23);
+	s.WriteString("ASDASD");
 
-	print_packet_hex(data, 15);
-
-	INT64 a = r_64(data);
-
-	printf("%d\n", a);
+	print_packet((UINT8*)s.buff.buf, s.buff.len);
+	print_packet_hex((UINT8*)s.buff.buf, s.buff.len);
 	return;
 }
 
