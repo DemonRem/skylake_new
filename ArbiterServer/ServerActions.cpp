@@ -16,7 +16,7 @@
 #define OP_DUMP
 
 const char SERVER_LOGIN_NAME[] = "PlanetSL";
-constexpr const int SERVER_LOGIN_NAME_SIZE = sizeof(SERVER_LOGIN_NAME);
+const int SERVER_LOGIN_NAME_SIZE = sizeof(SERVER_LOGIN_NAME);
 
 extern ArbiterState arbiterState;
 ServerAction actions[OPCODE_MAX];
@@ -51,17 +51,17 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 
 	if (result == 1) { //account is online already
 		//@TODO send back ...already logged in
+
+		return 1;
 	}
 	else if (result) {
 		return result;
 	}
 
-	SendStream packet = SendStream(5);
-	packet.connectionId = net->id;
+	MemoryStream packet = MemoryStream(5);
 
-	packet.Resize(5);
-	packet.WriteInt16(5);
-	packet.WriteInt16(S_CHECK_VERSION);
+	packet.WriteUInt16(5);
+	packet.WriteUInt16(S_CHECK_VERSION);
 	packet.WriteUInt8(1);
 	result = PostSendStream(net, packet);
 	if (result) {
@@ -70,8 +70,8 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	}
 
 	packet.Resize(5);
-	packet.WriteInt16(5);
-	packet.WriteInt16(S_LOADING_SCREEN_CONTROL_INFO);
+	packet.WriteUInt16(5);
+	packet.WriteUInt16(S_LOADING_SCREEN_CONTROL_INFO);
 	packet.WriteUInt8(0);
 	result = PostSendStream(net, packet);
 	if (result) {
@@ -80,8 +80,8 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	}
 
 	packet.Resize(12);
-	packet.WriteInt16(12);
-	packet.WriteInt16(S_REMAIN_PLAY_TIME);
+	packet.WriteUInt16(12);
+	packet.WriteUInt16(S_REMAIN_PLAY_TIME);
 	packet.WriteInt32(6);
 	packet.WriteInt32(0);
 	result = PostSendStream(net, packet);
@@ -91,8 +91,8 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	}
 
 	packet.Resize(23);
-	packet.WriteInt16(23);
-	packet.WriteInt16(S_LOGIN_ARBITER);
+	packet.WriteUInt16(23);
+	packet.WriteUInt16(S_LOGIN_ARBITER);
 	packet.WriteInt16(1);
 	packet.WriteInt16(0); //unk?
 	packet.WriteInt32(0);
@@ -106,7 +106,7 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 		return 1;
 	}
 
-	packet.Resize(14 + ((SERVER_LOGIN_NAME_SIZE + 1) * 2));
+	packet.Resize(14 + (SERVER_LOGIN_NAME_SIZE * 2));
 	packet.WriteInt16(0);
 	packet.WriteInt16(S_LOGIN_ACCOUNT_INFO);
 	packet.WriteInt16(14); // server name offset
@@ -122,9 +122,19 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	return 0;
 }
 
+INT32 SetVisibleRangeAction(WorkerState* w, ConnectionNetPartial* net) {
+#ifdef OP_DUMP
+	printf("RECV OP[%s]\n", __FUNCTION__);
+#endif
+
+	return 0;
+}
+
+
 INT32 InitServerActions() {
 	actions[C_CHECK_VERSION] = CheckVersionAction;
 	actions[C_LOGIN_ARBITER] = LoginArbiterAction;
+	actions[C_SET_VISIBLE_RANGE] = LoginArbiterAction;
 
 
 	return 0;

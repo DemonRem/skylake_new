@@ -9,7 +9,6 @@ enum EWorkItemType : LONG {
 	WorkItemType_SendInit,
 	WorkItemType_SendKey,
 	WorkItemType_SendToConnection,
-	WorkItemType_SendStream,
 
 	WorkerItemType_MAX
 };

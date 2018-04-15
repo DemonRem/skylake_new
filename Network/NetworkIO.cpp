@@ -7,6 +7,9 @@
 #include <memory>
 
 //@TODO get an allocator for the send work items
+#ifdef DEBUG_PACKETS
+#include "../Base/Utils.h"
+#endif // DEBUG_PACKETS
 
 const CHAR INIT_BUFFER[4]{ 1,0,0,0 };
 
@@ -56,6 +59,9 @@ const INT32 SendServerKey(ConnectionNetPartial * conn, INT32 index) {
 	return 0;
 }
 const INT32 PostSend(ConnectionNetPartial * conn, SendToConnection * packet) {
+
+	conn->session.Encrypt((UINT8*)packet->buff.buf, (INT32)packet->buff.len);
+
 	DWORD bytesSent = 0;
 	INT32 result = WSASend(conn->sock, &packet->buff, 1, &bytesSent, 0, (OVERLAPPED*)packet, NULL);
 	if (result == SOCKET_ERROR && ((result = WSAGetLastError()) != WSA_IO_PENDING)) {
@@ -72,6 +78,8 @@ const INT32 PostSend(ConnectionNetPartial * conn, UINT8 * data, UINT32 size) {
 	packet->buff.len = size;
 	packet->buff.buf = (CHAR*)data;
 
+	conn->session.Encrypt(data, (INT32)size);
+
 	DWORD bytesSent = 0;
 	INT32 result = WSASend(conn->sock, &packet->buff, 1, &bytesSent, 0, (OVERLAPPED*)packet.get(), NULL);
 	if (result == SOCKET_ERROR && ((result = WSAGetLastError()) != WSA_IO_PENDING)) {
@@ -84,8 +92,26 @@ const INT32 PostSend(ConnectionNetPartial * conn, UINT8 * data, UINT32 size) {
 	packet.release();
 	return 0;
 }
-const INT32 PostSendStream(ConnectionNetPartial * conn, SendStream & pPacket) {
-	SendStream * packet = new SendStream(pPacket);
+const INT32 PostSendStream(ConnectionNetPartial * conn, MemoryStream & pPacket) {
+	SendToConnection * packet = new SendToConnection(conn->id);
+
+	packet->buff.buf = (CHAR*)pPacket._raw;
+	packet->buff.len = (ULONG)pPacket._size;
+
+#ifdef DEBUG_PACKETS
+	pPacket._pos = 0;
+
+	packet->size = pPacket.ReadUInt16();
+	packet->opcode = pPacket.ReadUInt16();
+
+	printf("sending size[%d] opcode[%d]\n", packet->size, packet->opcode);
+	print_packet(pPacket._raw, pPacket._size);
+
+#endif // DEBUG_PACKETS
+
+
+	conn->session.Encrypt((UINT8*)packet->buff.buf, (INT32)packet->buff.len);
+
 	DWORD bytesSent = 0;
 	INT32 result = WSASend(conn->sock, &packet->buff, 1, &bytesSent, 0, (OVERLAPPED*)packet, NULL);
 	if (result == SOCKET_ERROR && ((result = WSAGetLastError()) != WSA_IO_PENDING)) {

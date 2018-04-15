@@ -22,7 +22,7 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 		rs = p->executeQuery();
 
 		if (rs && rs->next()) {
-			bool isOnline = rs->getBoolean(8);
+			/*bool isOnline = rs->getBoolean(8);
 			if (isOnline) {
 				std::cout << "::ARBITER::MULTIPLE CONNECTION ON SAME ACCOUNT ATTEMPT REJECTED!\n";
 
@@ -32,7 +32,7 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 				delete rs;
 
 				return 1;
-			}
+			}*/
 
 			account->dbId = (UINT64)rs->getInt64(1); //id
 			account->flags = rs->getInt(5); //flags

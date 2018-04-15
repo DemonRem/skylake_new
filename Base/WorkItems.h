@@ -14,7 +14,7 @@ struct Work {
 	const EWorkItemType type;
 	DWORD workFlags;
 
-	Work(const EWorkItemType t) : type(t) { memset(&w, 0, sizeof(OVERLAPPED)); }
+	Work(const EWorkItemType t) : type(t), workFlags(0) { memset(&w, 0, sizeof(OVERLAPPED)); }
 
 	inline const BOOL HasWorkFlag(const EWorkItemFlags flag) const noexcept {
 		return workFlags & flag;
@@ -49,9 +49,25 @@ struct SendKey : Work {
 
 struct SendToConnection : Work {
 	SendToConnection(UID connId) :Work(WorkItemType_SendToConnection), connectionId(connId) {}
+	~SendToConnection() {
+		if (buff.buf && !HasWorkFlag(EWorkItemFlags_ShouldNotDeleteData)) {
+			delete[] buff.buf;
+			buff.buf = nullptr;
+		}
+	}
 
 	const UID connectionId;
 	WSABUF buff;
+
+#ifndef DEBUG_PACKETS
+	UINT16 size;
+	UINT16 opcode;
+#endif // !DEBUG_PACKETS
+
+
+	inline void Release() {
+		buff.buf = nullptr;
+	}
 };
 
 

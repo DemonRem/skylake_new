@@ -35,15 +35,18 @@ typedef unsigned __int64    UINT64, *PUINT64;
 #define r_u64(_raw) (UINT64)(r_32((_raw) + 4) | r_32((_raw)))
 #define r_single(_raw) (*(float*)(_raw))
 #define r_double(_raw) (*(double*)(_raw))
+//
+//shortBytes[0] = (val & 0xff);
+//shortBytes[1] = ((val >> 8) & 0xff);
 
-#define w_8(_raw, data)		(*((INT8*)_raw)		= (data))
-#define w_u8(_raw, data)	(*((UINT8*)_raw)	= (data))
-#define w_16(_raw, data)	(*((INT16*)_raw)	= (data))
-#define w_u16(_raw, data)	(*((UINT16*)_raw)	= (data))
-#define w_32(_raw, data)	(*((LONG*)_raw)		= (data))
-#define w_u32(_raw, data)	(*((ULONG*)_raw)	= (data))
-#define w_64(_raw, data)	(*((INT64*)_raw)	= (data))
-#define w_u64(_raw, data)	(*((UINT64*)_raw)	= (data))
+#define w_8(_raw, data)		(*((INT8*)(_raw))	= (data))
+#define w_u8(_raw, data)	(*((UINT8*)(_raw))	= (data))
+#define w_16(_raw, data)	(*((INT16*)(_raw))	= (data))
+#define w_u16(_raw, data)	(*((UINT16*)(_raw))	= (data))
+#define w_32(_raw, data)	(*((LONG*)(_raw))	= (data))
+#define w_u32(_raw, data)	(*((ULONG*)(_raw))	= (data))
+#define w_64(_raw, data)	(*((INT64*)(_raw))	= (data))
+#define w_u64(_raw, data)	(*((UINT64*)(_raw))	= (data))
 
 typedef union _UID {
 	struct {

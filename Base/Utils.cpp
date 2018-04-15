@@ -66,7 +66,7 @@ void print_packet(UINT8 * data, UINT16 size)
 void print_packet_hex(UINT8 * data, UINT16 size)
 {
 	for (int i = 0; i < size; ++i) {
-		std::cout << std::hex << (int)data[i];
+		printf("%02hhX", data[i]);
 	}
 
 	std::cout << std::endl;
@@ -97,6 +97,7 @@ void hwstr_to_str(char * wchar, char * out, size_t maxCount) {
 
 	++out[0] = 0x00;
 }
+
 void nwstr_to_str(char * wchar, char * out, size_t maxCount) {
 	register size_t i = 0;
 

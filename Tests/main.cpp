@@ -17,12 +17,13 @@
 
 void ReadWriteTest() {
 	
-	SendStream s(0);
+	MemoryStream m = MemoryStream(18);
 
-	s.WriteString("ASDASD");
+	m.WriteUInt16(2);
+	m.WriteUInt16(10);
 
-	print_packet((UINT8*)s.buff.buf, s.buff.len);
-	print_packet_hex((UINT8*)s.buff.buf, s.buff.len);
+	print_packet(m._raw, m._size);
+	print_packet_hex(m._raw, m._size);
 	return;
 }
 

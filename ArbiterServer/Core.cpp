@@ -291,7 +291,7 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 				}
 			}
 		}
-		else{
+		else {
 			printf("UNKNOWN OPCODE[%d]\n", w->opcode);
 		}
 
@@ -351,19 +351,10 @@ DWORD WORKERROUTINE _onConnectionRecv(ConnectionNetPartial * w) {
 }
 DWORD WORKERROUTINE _onDataSentToConnection(SendToConnection * w) {
 
-	if (!w->HasWorkFlag(EWorkItemFlags_ShouldNotDeleteData) && w->buff.buf) {
-		delete[] w->buff.buf;
-		w->buff.buf = nullptr;
-	}
+#ifdef DEBUG_PACKETS
+	printf("sent data size[ %d ] opcode[ %d ]\n", w->size, w->opcode);
+#endif
 
-	return 0;
-}
-DWORD WORKERROUTINE _onSentStreamToConnection(SendStream * w) {
-	printf("sent packet!!\n");
-	if (!w->HasWorkFlag(EWorkItemFlags_ShouldNotDeleteData) && w->buff.buf) {
-		delete[] w->buff.buf;
-		w->buff.buf = nullptr;
-	}
 
 	return 0;
 }
@@ -397,6 +388,7 @@ DWORD WINAPI ArbiterWorkerRoutine(void* argv) {
 		register WorkerSubroutine handler = nullptr;
 		if (wState.work->type >= WorkerItemType_MAX || !(handler = workerSubroutines[wState.work->type])) {
 			//@TODO log
+			printf("unknown work item %ld\n", wState.work->type);
 		}
 		else {
 			result = handler(wState.work);
@@ -420,7 +412,6 @@ void InitWorkerSoubroutines() {
 	workerSubroutines[WorkItemType_NewConnection] = (WorkerSubroutine)_onNewConnection;
 	workerSubroutines[WorkItemType_SendInit] = (WorkerSubroutine)_onConnectInit;
 	workerSubroutines[WorkItemType_SendKey] = (WorkerSubroutine)_onServerKeySent;
-	workerSubroutines[WorkItemType_SendStream] = (WorkerSubroutine)_onSentStreamToConnection;
 }
 const BOOL InitArbiterCore() {
 	InitializeCriticalSection(&connectionsLock);
