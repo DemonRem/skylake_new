@@ -5,6 +5,7 @@
 
 #include "../Opcodes/Opcodes.h"
 #include "../Models/Connection.h"
+#include "../Models/Player.h"
 #include "../Base/Utils.h"
 #include "../Base/ServerDefs.h"
 #include "../DataLayer/AccountDBO.h"
@@ -12,6 +13,7 @@
 #include "../Base/IOCP.h"
 
 #include "../Base/MemoryStreams.h"
+#include "../Config/ArbiterConfig.h"
 
 #define OP_DUMP
 
@@ -122,6 +124,58 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 	return 0;
 }
 
+INT32 GetUserListAction(WorkerState* w, ConnectionNetPartial* net) {
+#ifdef OP_DUMP
+	printf("RECV OP[%s]\n", __FUNCTION__);
+#endif
+	sql::Connection * con = w->mysqlConnection;
+	Account * account = GetAccount(net->id);
+	Connection * userConn = GetConnection(net->id);
+
+	INT32 result = GetPlayerList(w->mysqlConnection, userConn, account);
+	if (result == 1) {
+		// no charachters
+	}
+	else if (result) {
+		return result;
+	}
+
+	UINT16 packetLength = S_GET_USER_LIST_HEADER_LENGTH + (S_GET_USER_LIST_PLAYER_NO_NAME_LENGTH * userConn->playerCount);
+	MemoryStream packet = MemoryStream(packetLength);
+	packet.ZeroOut();
+
+	packet.WriteUInt16(0);
+	packet.WriteUInt16(S_GET_USER_LIST);
+	packet.WriteUInt16(userConn->playerCount);
+
+	UINT16 nextPos = packet._pos;
+	packet._pos += 2;
+
+	//stream.WriteInt32(0);
+	//stream.WriteByte(0);
+	packet._pos += 5;
+	packet.WriteInt32((int)ArbiterConfig::server.maxPlayersPerAccount);
+
+	packet.WriteInt32(1);
+	packet._pos += 2;
+
+	packet.WriteInt32(40);
+	//stream.WriteInt32(0);
+	packet._pos += 4;
+	packet.WriteInt32(24);
+
+	for (UINT16 i = 0; i < userConn->playerCount; i++) {
+		Player* player = &userConn->players[i];
+
+
+		//@TODO write player sub packet 
+
+	}
+
+
+	return 0;
+}
+
 INT32 SetVisibleRangeAction(WorkerState* w, ConnectionNetPartial* net) {
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
@@ -135,6 +189,7 @@ INT32 InitServerActions() {
 	actions[C_CHECK_VERSION] = CheckVersionAction;
 	actions[C_LOGIN_ARBITER] = LoginArbiterAction;
 	actions[C_SET_VISIBLE_RANGE] = LoginArbiterAction;
+	actions[C_GET_USER_LIST] = LoginArbiterAction;
 
 
 	return 0;

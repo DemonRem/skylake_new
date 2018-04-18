@@ -18,6 +18,7 @@ struct ArbiterConfig {
 		UINT32	id;
 		UINT32	arbiterProfile;
 		UINT16	worldServerListenPort;
+		UINT16  maxPlayersPerAccount;
 
 		char serverName[32];
 		char worldServerListenIp[16];

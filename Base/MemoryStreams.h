@@ -192,5 +192,12 @@ struct MemoryStream {
 		_size = 0;
 		_pos = 0;
 	}
+	inline void ZeroOut() {
+		if (!_size || !_raw) {
+			return;
+		}
+
+		memset(_raw, 0, sizeof(UINT16) * _size);
+	}
 };
 #endif

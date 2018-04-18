@@ -22,7 +22,7 @@ struct Player {
 	a_single		x;
 	a_single		y;
 	a_single		z;
-	a_int16			w;
+	a_int16			h;
 
 	a_uint32		continentId;
 	a_uint32		areaId;
@@ -37,14 +37,22 @@ struct Player {
 	UINT32			worldMapGuardId;
 	UINT32			worldMapSectionId;
 
+	UINT64			exp;
+	UINT64			restedExp;
+
+	UINT64			level;
+
 	UINT64			banTime;
 	UINT64			lastOnline;
+	UINT64			createdAt;
 
 	char			name[PLAYER_NAME_MAX_LENGTH];
 
 	UINT8			details1[PLAYER_DETAILS_1_BUFFER_SIZE];
 	UINT8			details2[PLAYER_DETAILS_2_BUFFER_SIZE];
 	UINT8			details3[PLAYER_DETAILS_3_BUFFER_SIZE];
+
+	UINT32			lobbyIndex;
 
 	//player stats
 	CRITICAL_SECTION lock;

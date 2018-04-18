@@ -51,6 +51,19 @@ bool InitArbiterConfig(const char* fileName)
 				goto error_proc;
 			}
 		}
+		else if (stringStartsWith(line, "server.max_players_per_account"))
+		{
+			if (!sscanf(line.c_str(), "server.max_players_per_account= %hu", &ArbiterConfig::server.maxPlayersPerAccount))
+			{
+				error_message = "bad max_players_per_account value!";
+				goto error_proc;
+			}
+
+			if (ArbiterConfig::server.maxPlayersPerAccount > MAX_PLAYERS_PER_CHARACTER) {
+				error_message = "max_players_per_account max value is 32!";
+				goto error_proc;
+			}
+		}
 		else if (stringStartsWith(line, "server.port"))
 		{
 			if (!sscanf(line.c_str(), "server.port= %hu", &ArbiterConfig::net.port))

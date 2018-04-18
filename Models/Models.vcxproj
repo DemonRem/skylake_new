@@ -130,6 +130,8 @@
     <ClInclude Include="ZoneTemplate.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Abnormality.cpp" />
+    <ClCompile Include="DataStore.cpp" />
     <ClCompile Include="Stats.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

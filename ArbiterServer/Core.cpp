@@ -210,6 +210,9 @@ DWORD WORKERROUTINE _onServerKeySent(SendKey * w) {
 		return 2;
 	}
 
+	Connection* mainConn = GetConnection(w->connectionId);
+	mainConn->connected.test_and_set();
+
 	net.recvState = EConnectionRecvState_PacketHead;
 	net.wsaBuff.len = 4; //head size
 	INT32 result = PostRecv(&net); //recv first packet head

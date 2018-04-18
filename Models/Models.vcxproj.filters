@@ -57,5 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stats.cpp" />
+    <ClCompile Include="DataStore.cpp" />
+    <ClCompile Include="Abnormality.cpp" />
   </ItemGroup>
 </Project>

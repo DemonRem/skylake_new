@@ -40,7 +40,7 @@ struct Connection {
 	a_flag  inLobby;
 	a_flag  changingWorldServer;
 
-	UINT32   playerCount;
+	UINT16   playerCount;
 	Player * players;
 	Player * selectedPlayer;
 	DWORD	flags;

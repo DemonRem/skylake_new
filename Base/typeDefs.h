@@ -66,6 +66,12 @@ typedef union _UID {
 	inline const bool operator==(UINT64& id) const noexcept {
 		return this->id == id;
 	}
+	inline const bool operator==(const _UID& id) const noexcept {
+		return this->id == id.id;
+	}
+	inline const bool operator==(const UINT64& id) const noexcept {
+		return this->id == id;
+	}
 	inline void operator=(UINT64& id)  noexcept {
 		this->id = id;
 	}

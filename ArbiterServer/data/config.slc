@@ -5,6 +5,7 @@ server.name=SKY-LAKE
 
 server.ip=127.0.0.1
 server.port=10001
+server.max_players_per_account=5
 
 ##### CHAT ######
 server.chat.enabled=1
