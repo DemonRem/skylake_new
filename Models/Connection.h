@@ -12,8 +12,7 @@
 
 #include "../Network/Crypt.h"
 #include "../Opcodes/Opcodes.h"
-
-struct Player;
+#include "../Models/Player.h"
 
 struct Account {
 	UID		id;
@@ -53,6 +52,20 @@ struct Connection {
 	}
 	inline void RemoveFlag(const EConnectionFlags flag) noexcept {
 		flags &= !flag;
+	}
+	inline Player * SelectPlayer(UINT32 dbId) {
+		if (!players) {
+			return nullptr;
+		}
+
+		for (UINT32 i = 0; i < playerCount; i++) {
+			if (players[i].dbId == dbId) {
+				selectedPlayer = players + i;
+				break;
+			}
+		}
+
+		return selectedPlayer;
 	}
 };
 struct ConnectionNetPartial :Work {

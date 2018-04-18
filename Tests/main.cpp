@@ -65,16 +65,16 @@ int main()
 	auto start = std::chrono::steady_clock::now();
 
 	/*DBOTest();*/
-	//RandomTest();
+	RandomTest();
 	//StatsTest();
 	//ReadWriteTest();
-	INT32 result = ItemsTests();
+	/*INT32 result = ItemsTests();
 	if (result) {
 		printf("Test FAILED!! result = %d\n", result);
 	}
 	else {
 		printf("Test SUCCESSS\n");
-	}
+	}*/
 
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;

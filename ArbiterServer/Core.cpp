@@ -505,10 +505,25 @@ const BOOL InitArbiterCore() {
 		return 8;
 	}
 
+	sql::Connection *initConn = mysqlDriver->NewConnection();
+	if (!initConn) {
+		printf("Failed to open connection to the sql-db\n");
+		return 9;
+	}
+
+	result = InitDBO(initConn);
+	if (result) {
+		printf("Failed to init the DBOs\n");
+		return 10;
+	}
+
+	initConn->close();
+	delete initConn;
+
 	arbiterState.acceptThread = CreateThread(NULL, 0, ArbiterAcceptRoutine, NULL, 0, NULL);
 	if (arbiterState.acceptThread == NULL) {
 		printf("Failed to create accept thread\n");
-		return 9;
+		return 11;
 	}
 
 	arbiterState.workerThreads = new HANDLE[ARBITER_WORKERS_COUNT];
@@ -517,13 +532,13 @@ const BOOL InitArbiterCore() {
 		sql::Connection *conn = mysqlDriver->NewConnection();
 		if (!conn) {
 			printf("Faield to open connection to db. Server might be down or the config is wrong.\n");
-			return 10;
+			return 12;
 		}
 
 		arbiterState.workerThreads[i] = CreateThread(NULL, 0, ArbiterWorkerRoutine, conn, 0, NULL);
 		if (!arbiterState.workerThreads[i]) {
 			printf("Failed to create worker thread\n");
-			return 11;
+			return 13;
 		}
 	}
 

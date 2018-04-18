@@ -87,7 +87,7 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 	return 0;
 }
 
-const INT32 GetPlayerList(sql::Connection * sqlConn, Connection * conn, Account * account) {
+const INT32 GetPlayerList(sql::Connection * sqlConn, Connection * conn, Account * account, Inventory * inv) {
 
 	sql::PreparedStatement *p = nullptr;
 	sql::ResultSet * rs = nullptr;
@@ -179,6 +179,7 @@ const INT32 GetPlayerList(sql::Connection * sqlConn, Connection * conn, Account 
 
 			player->account = account;
 			player->connection = conn;
+			player->storage = inv;
 
 			player++;
 		}

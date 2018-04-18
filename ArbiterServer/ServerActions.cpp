@@ -3,17 +3,21 @@
 
 #include "Core.h"
 
-#include "../Opcodes/Opcodes.h"
-#include "../Models/Connection.h"
-#include "../Models/Player.h"
 #include "../Base/Utils.h"
 #include "../Base/ServerDefs.h"
-#include "../DataLayer/AccountDBO.h"
-#include "../Network/NetworkIO.h"
 #include "../Base/IOCP.h"
-
 #include "../Base/MemoryStreams.h"
+
+#include "../Models/Connection.h"
+#include "../Models/Player.h"
+
+#include "../DataLayer/AccountDBO.h"
+#include "../DataLayer/Inventory.h"
+
+#include "../Network/NetworkIO.h"
+
 #include "../Config/ArbiterConfig.h"
+#include "../Opcodes/Opcodes.h"
 
 #define OP_DUMP
 
@@ -30,7 +34,6 @@ INT32 CheckVersionAction(WorkerState * w, ConnectionNetPartial* net) {
 
 	return  0;
 }
-
 INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
@@ -123,16 +126,24 @@ INT32 LoginArbiterAction(WorkerState* w, ConnectionNetPartial* net) {
 
 	return 0;
 }
+INT32 SetVisibleRangeAction(WorkerState* w, ConnectionNetPartial* net) {
+#ifdef OP_DUMP
+	printf("RECV OP[%s]\n", __FUNCTION__);
+#endif
 
+	return 0;
+}
 INT32 GetUserListAction(WorkerState* w, ConnectionNetPartial* net) {
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 	sql::Connection * con = w->mysqlConnection;
+
 	Account * account = GetAccount(net->id);
 	Connection * userConn = GetConnection(net->id);
+	Inventory* inv = GetStorage(net->id);
 
-	INT32 result = GetPlayerList(w->mysqlConnection, userConn, account);
+	INT32 result = GetPlayerList(w->mysqlConnection, userConn, account, inv);
 	if (result == 1) {
 		// no charachters
 	}
@@ -175,21 +186,33 @@ INT32 GetUserListAction(WorkerState* w, ConnectionNetPartial* net) {
 
 	return 0;
 }
-
-INT32 SetVisibleRangeAction(WorkerState* w, ConnectionNetPartial* net) {
+INT32 SelectUserAction(WorkerState* w, ConnectionNetPartial* net) {
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
+	sql::Connection * con = w->mysqlConnection;
 
-	return 0;
+	Account * account = GetAccount(net->id);
+	Connection * userConn = GetConnection(net->id);
+	Inventory* inv = GetStorage(net->id);
+
+	UINT32 playerDbId = r_u32(net->recvBuffer + 4);
+	Player * player = userConn->SelectPlayer(playerDbId);
+	if (!player) {
+		//@TODO send back error
+
+		return 1;
+	}
+	
+	//@TODO get world node and do the async world connect process 
 }
-
 
 INT32 InitServerActions() {
 	actions[C_CHECK_VERSION] = CheckVersionAction;
 	actions[C_LOGIN_ARBITER] = LoginArbiterAction;
-	actions[C_SET_VISIBLE_RANGE] = LoginArbiterAction;
-	actions[C_GET_USER_LIST] = LoginArbiterAction;
+	actions[C_SET_VISIBLE_RANGE] = SetVisibleRangeAction;
+	actions[C_GET_USER_LIST] = GetUserListAction;
+	actions[C_SELECT_USER] = SelectUserAction;
 
 
 	return 0;

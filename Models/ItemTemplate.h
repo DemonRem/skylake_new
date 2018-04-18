@@ -15,6 +15,9 @@ struct EquipmentSetData;
 struct EnchantSet;
 
 struct ItemTemplate {
+	UINT64	id;
+	UINT32 index;
+
 	EItemFlags	itemFlags;
 
 	EItemBoundType		bind_type;
@@ -38,7 +41,7 @@ struct ItemTemplate {
 };
 
 struct ItemTemplateInventoryData {
-	UINT32	id;
+	UINT64	id;
 
 	FLAG		requiredClasses;
 	FLAG16		requiredRaces;
@@ -70,22 +73,23 @@ struct ItemTemplateInventoryData {
 };
 
 struct ItemTemplatePtrs {
-	const PassivityCategory * masterpiecePassivityCategory;
-	const PassivityCategory * passivityCategory;
-	const CusotmizingItem * customizingItem;
-	const EquipmentSetData * equipmentSetData;
-	const EquipmentData  * equipmentData;
+	PassivityCategory * masterpiecePassivityCategory;
+	PassivityCategory * passivityCategory;
+	CusotmizingItem * customizingItem;
+	EquipmentSetData * equipmentSetData;
+	EquipmentData  * equipmentData;
 
 	// if enchatLevel <= 9 [_enchant] else if enchantLeve >=10 [_masterpieceEnchant]
-	const EnchantSet * enchant;
-	const EnchantSet * masterpieceEnchant;
+	EnchantSet * enchant;
+	EnchantSet * masterpieceEnchant;
 
 	// if enchatLevel <= 9 [_passivities] else if enchantLeve >=10 [_masterpiecePassivities]
-	const PassivityTemplate * passivities[ITEM_MAX_PASSIVITIES]; //satic passivities
-	//const PassivityTemplate * masterpiecePassivities[32]; //satic msterwork passivities
+	PassivityTemplate * passivities[ITEM_MAX_PASSIVITIES]; //satic passivities
+	PassivityTemplate * masterpiecePassivities[32]; //satic msterwork passivities
 };
 
 struct ItemTemplateStats {
+
 	INT32		minAtk;
 	INT32		maxAtk;
 	INT32		impact;
@@ -95,6 +99,7 @@ struct ItemTemplateStats {
 };
 
 struct ItemTemplateLinks {
+
 	UINT32	passivityLinkG;
 	UINT32	linkCrestId;
 	UINT32	linkLookInfoId;

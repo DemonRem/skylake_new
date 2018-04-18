@@ -39,6 +39,7 @@ float frandom(float flLow, float flHigh)
 	return (fl * (flHigh - flLow)) + flLow; // float in [low,high)
 }
 
+//returns random long in range [from, to]
 long random_range(long from, long to)
 {
 	assert(from <= to);

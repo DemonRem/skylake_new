@@ -7,10 +7,12 @@
 #include "../Base/ServerDefs.h"
 
 #include "../Models/Connection.h"
+#include "../DataLayer/Inventory.h"
 
 static Account accounts[MAX_CONNECTIONS];
 static Connection connections[MAX_CONNECTIONS];
 static ConnectionNetPartial connectionNetData[MAX_CONNECTIONS];
+static Inventory storage[MAX_CONNECTIONS];
 
 const BOOL InitArbiterCore();
 
@@ -22,6 +24,9 @@ FORCEINLINE Account * GetAccount(UID id) noexcept {
 }
 FORCEINLINE ConnectionNetPartial * GetConnectionNetData(UID id) noexcept {
 	return connectionNetData + id.id;
+}
+FORCEINLINE Inventory * GetStorage(UID id) noexcept {
+	return storage + id.id;
 }
 
 Connection * GetNewConnection() noexcept;

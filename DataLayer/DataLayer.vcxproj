@@ -134,6 +134,7 @@
     <ClCompile Include="DBO.cpp" />
     <ClCompile Include="ItemsDBO.cpp" />
     <ClCompile Include="MySqlDriver.cpp" />
+    <ClCompile Include="PassivityCore.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AccountDBO.h" />
@@ -141,7 +142,9 @@
     <ClInclude Include="DbHandler.h" />
     <ClInclude Include="DBO.h" />
     <ClInclude Include="ItemsDBO.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="MySqlDriver.h" />
+    <ClInclude Include="PassivityCore.h" />
     <ClInclude Include="SkillsDBO.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

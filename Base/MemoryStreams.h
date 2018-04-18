@@ -7,6 +7,8 @@
 #include "../Base/win32.h"
 #include "../Base/winsock.h"
 
+#include <istream>
+
 #define DEBUG_PACKETS
 
 #define MEMORY_STREAM_MAX_SIZE 0xffffui16
@@ -19,6 +21,16 @@ struct MemoryStream {
 	MemoryStream() :_raw(nullptr), _size(0), _pos(0) { }
 	MemoryStream(UINT16 size) : _size(size), _pos(0) { _raw = new UINT8[size]; }
 	MemoryStream(UINT8* data, UINT16 size) :_raw(data), _size(size), _pos(0) { }
+	MemoryStream(std::istream * str)
+	{
+		str->seekg(0, std::istream::end);
+		_size = (UINT16)str->tellg();
+		str->seekg(0, std::istream::beg);
+
+		_raw = new UINT8[_size];
+		str->read((char*)_raw, _size);
+		_pos = 0;
+	}
 
 	~MemoryStream() {
 		if (_raw) {

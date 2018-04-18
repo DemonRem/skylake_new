@@ -7,12 +7,12 @@
 struct ItemTemplate;
 struct Passivity;
 
-#define ITEM_MAX_PASSIVITIES 16
-#define ITEM_SIZE 
+#define ITEM_MAX_PASSIVITIES 18
+#define ITEM_BODY_SIZE 40
 
-//!!!DONT CHANCHE A THING HERE, IT WILL BREAK THE DB-SERIALIZER
+//!!!DONT CHANCHE A THING HERE, IT WILL BREAK THE ITEM SERIALIZER/DESERIALIZER
 struct Item {
-	UID				id;
+	UID				id;  //db_uid
 
 	// SERIALIZER _START
 	INT32			stackCount;
@@ -27,6 +27,8 @@ struct Item {
 	ItemTemplate *	iTemplate;
 
 	Passivity*		passivities[ITEM_MAX_PASSIVITIES];
+
+	Item() :iTemplate(0) { memset(passivities, 0, sizeof(Passivity*) * ITEM_MAX_PASSIVITIES); }
 
 	inline const BOOL HasFlag(const EItemFlags flag) const noexcept {
 		return flags & flag;
@@ -46,7 +48,10 @@ struct Item {
 
 		return (UINT16)(p - passivities);
 	}
-	Item() :iTemplate(0) { memset(passivities, 0, sizeof(Passivity*) * ITEM_MAX_PASSIVITIES); }
+	inline Passivity** ClearPassivities() {
+		memset(passivities, 0, sizeof(Passivity*) *ITEM_MAX_PASSIVITIES);
+		return passivities;
+	}
 };
 
 #endif

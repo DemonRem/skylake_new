@@ -8,6 +8,8 @@
 
 #include "MySqlDriver.h"
 
+INT32 InitDBO(sql::Connection * conn);
+
 static MySqlDriver driver;
 MySqlDriver* GetMysqlDriver() {
 	return &driver;

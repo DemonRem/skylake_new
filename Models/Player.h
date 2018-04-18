@@ -11,6 +11,7 @@
 
 struct Connection;
 struct Account;
+struct Inventory;
 
 struct Player {
 	UINT32			dbId;
@@ -18,6 +19,7 @@ struct Player {
 
 	Connection *	connection;
 	Account *		account;
+	Inventory *		storage;
 
 	a_single		x;
 	a_single		y;

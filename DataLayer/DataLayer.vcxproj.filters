@@ -30,6 +30,9 @@
     <ClCompile Include="ItemsDBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PassivityCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DbHandler.h">
@@ -51,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AchievementsDBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PassivityCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

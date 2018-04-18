@@ -68,7 +68,7 @@ static CusotmizingItem 							cusotmizingItems[MAX_CUSTOMIZING_ITEMS_COUNT];
 
 BOOL InitDataStore();
 
-FORCEINLINE UINT32 GetItemIndex(UID itemId) {
+FORCEINLINE UINT32 GetItemTemplateIndex(UID itemId) {
 	//@TODO optimize search
 	u32for(itemsCount) {
 		if (itemTemplatesIndexes[i].id == itemId.id) {
