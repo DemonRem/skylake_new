@@ -15,7 +15,7 @@
 const INT32 LoginArbiter(const char * username, const char password[32], sql::Connection * conn, Account * account)
 {
 	sql::PreparedStatement *p = nullptr;
-	sql::ResultSet * rs;
+	sql::ResultSet * rs = nullptr;
 
 	try
 	{
@@ -44,10 +44,12 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 
 			rs->close();
 			delete rs;
+			rs = nullptr;
 		}
 
 		p->close();
 		delete p;
+		p = nullptr;
 
 		p = conn->prepareStatement("UPDATE accounts SET isOnline=?, lastOnlineUTC=?, connectionIndex=? WHERE id=?");
 		p->setBoolean(1, true);
@@ -72,16 +74,27 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 	catch (sql::SQLException & e)
 	{
 		printf("::SQL-EX::LN[%d] FN[%s] EX[%s]\n", __LINE__, __FUNCTION__, e.what());
+
+		if (rs) {
+			rs->close();
+			delete rs;
+		}
+
 		if (p) {
+			p->close();
 			delete p;
-			p = nullptr;
 		}
 
 		return 3;
 	}
 
 	if (p) {
+		p->close();
 		delete p;
+	}
+	if (rs) {
+		rs->close();
+		delete rs;
 	}
 
 	return 0;
