@@ -90,7 +90,7 @@ const INT32 LoginArbiter(const char * username, const char password[32], sql::Co
 const INT32 GetPlayerList(sql::Connection * sqlConn, Connection * conn, Account * account) {
 
 	sql::PreparedStatement *p = nullptr;
-	sql::ResultSet * rs;
+	sql::ResultSet * rs = nullptr;
 
 	try {
 		p = sqlConn->prepareStatement("SELECT * FROM players WHERE accountId=?");
@@ -106,7 +106,7 @@ const INT32 GetPlayerList(sql::Connection * sqlConn, Connection * conn, Account 
 			return 1;
 		}
 
-		UINT32 playersCount = rs->rowsCount();
+		UINT32 playersCount = (UINT32)rs->rowsCount();
 		conn->players = new Player[playersCount];
 		conn->playerCount = playersCount;
 

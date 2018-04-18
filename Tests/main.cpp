@@ -12,11 +12,14 @@
 
 #include "../Base/Utils.h"
 
+#include "../DataLayer/ItemsDBO.h"
+#include "../Models/Item.h"
+
 #include <chrono>
 
 
 void ReadWriteTest() {
-	
+
 	MemoryStream m = MemoryStream(18);
 
 	m.WriteUInt16(2);
@@ -27,6 +30,33 @@ void ReadWriteTest() {
 	return;
 }
 
+INT32 ItemsTests() {
+	MemoryStream m = MemoryStream();
+	Item i;
+
+	i.stackCount = 1;
+
+	i.crystals[0] = 1;
+	i.crystals[1] = 2;
+	i.crystals[2] = 3;
+	i.crystals[3] = 4;
+
+	i.binderDBId = 44;
+	i.crafterDBId = 55;
+	i.itemLevel = 2;
+	i.flags = 575;
+	i.masterworkRate = 24.556f;
+
+	SerializeItem(&i, &m);
+	print_packet_hex(m._raw, m._size);
+	Item j;
+	m._pos = 0;
+	DeserializeItem(&j, &m);
+
+
+	return 0;
+}
+
 int main()
 {
 	auto start = std::chrono::steady_clock::now();
@@ -34,8 +64,15 @@ int main()
 	/*DBOTest();*/
 	//RandomTest();
 	//StatsTest();
-	ReadWriteTest();
-	
+	//ReadWriteTest();
+	INT32 result = ItemsTests();
+	if (result) {
+		printf("Test FAILED!! result = %d\n", result);
+	}
+	else {
+		printf("Test SUCCESSS\n");
+	}
+
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;
 	std::cout << "DURATION [MS]: " << std::chrono::duration <double, std::micro>(diff).count() << "\n";

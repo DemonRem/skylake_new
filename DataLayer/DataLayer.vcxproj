@@ -124,11 +124,15 @@
     <ProjectReference Include="..\Config\Config.vcxproj">
       <Project>{00134091-b025-4860-91fb-4eb9feef4212}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Models\Models.vcxproj">
+      <Project>{7a0a877c-27af-42b0-89d5-ccf1c6bc3c77}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AccountDBO.cpp" />
     <ClCompile Include="DbHandler.cpp" />
     <ClCompile Include="DBO.cpp" />
+    <ClCompile Include="ItemsDBO.cpp" />
     <ClCompile Include="MySqlDriver.cpp" />
   </ItemGroup>
   <ItemGroup>

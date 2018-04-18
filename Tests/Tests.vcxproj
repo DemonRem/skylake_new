@@ -91,7 +91,7 @@
       <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>base.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DataLayer.lib;Base.lib;Config.lib;Models.lib;Network.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,11 +135,20 @@
     <ClInclude Include="StatsTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Base\Base.vcxproj">
+      <Project>{8283ab57-dee4-4cde-91a9-c2e93af4be73}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Config\Config.vcxproj">
+      <Project>{00134091-b025-4860-91fb-4eb9feef4212}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\DataLayer\DataLayer.vcxproj">
       <Project>{4e6cba7c-b595-4e08-945a-fec55c4119b2}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.vcxproj">
       <Project>{7a0a877c-27af-42b0-89d5-ccf1c6bc3c77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Network\Network.vcxproj">
+      <Project>{ff3e0617-d5b7-4c36-897c-0a9da48c23a5}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

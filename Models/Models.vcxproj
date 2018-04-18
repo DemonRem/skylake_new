@@ -118,6 +118,7 @@
     <ClInclude Include="EquipmentData.h" />
     <ClInclude Include="EquipmentSet.h" />
     <ClInclude Include="HightData.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="ItemTemplate.h" />
     <ClInclude Include="NpcTemplate.h" />
     <ClInclude Include="PassivityCategory.h" />

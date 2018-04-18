@@ -46,7 +46,7 @@ struct Abnormality {
 		return flags & flag;
 	}
 	const inline UINT32 GetEffectCount() const noexcept {
-		register UINT32 count;
+		register UINT32 count = 0;
 
 		for (UINT32 i = 0; i < ABNORMALITY_MAX_EFFECTS; i++) {
 			if (effects[i]) {

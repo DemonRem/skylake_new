@@ -6,58 +6,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Abnormality.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomizingItem.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="DataStore.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="EnchantData.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="EquipmentData.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="EquipmentSet.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="HightData.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemTemplate.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="Models.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="NpcTemplate.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="Passivity.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="PassivityCategory.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="SkillTemplate.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldDataStore.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
-    <ClInclude Include="ZoneTemplate.h">
-      <Filter>DataModels</Filter>
-    </ClInclude>
+    <ClInclude Include="Abnormality.h" />
     <ClInclude Include="Connection.h" />
+    <ClInclude Include="CustomizingItem.h" />
+    <ClInclude Include="DataStore.h" />
+    <ClInclude Include="EnchantData.h" />
+    <ClInclude Include="EquipmentData.h" />
+    <ClInclude Include="EquipmentSet.h" />
+    <ClInclude Include="HightData.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemTemplate.h" />
+    <ClInclude Include="Models.h" />
+    <ClInclude Include="NpcTemplate.h" />
+    <ClInclude Include="Passivity.h" />
+    <ClInclude Include="PassivityCategory.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SkillTemplate.h" />
     <ClInclude Include="Stats.h" />
+    <ClInclude Include="WorldDataStore.h" />
+    <ClInclude Include="ZoneTemplate.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Stats.cpp" />
-    <ClCompile Include="DataStore.cpp" />
     <ClCompile Include="Abnormality.cpp" />
+    <ClCompile Include="DataStore.cpp" />
+    <ClCompile Include="Stats.cpp" />
   </ItemGroup>
 </Project>

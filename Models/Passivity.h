@@ -10,6 +10,7 @@
 
 struct Passivity {
 	UID id;
+	UINT32 index;
 
 	float	value;
 	float	probability;

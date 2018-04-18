@@ -248,7 +248,7 @@ enum EEquipmentPart : UINT16 {
 	EEquipmentPart_MAX
 };
 
-enum EItemFlags :UINT32 {
+enum EItemTemplateFlags :UINT32 {
 	EIFChangeColorEnable = 1 << 0,
 	EIFChangeLook = 1 << 1,
 	EIFTradable = 1 << 2,
@@ -270,6 +270,18 @@ enum EItemFlags :UINT32 {
 	//others come here
 
 	EIFIsNonDB = 1 << 30,
+};
+
+enum EItemFlags : ULONG {
+	EItemFlags_None = 0,
+	EItemFlags_HasCrystals = 1 << 0,
+	EItemFlags_IsBound = 1 << 1,
+	EItemFlags_IsMasterworked = 1 << 2,
+	EItemFlags_IsEnigmatic = 1 << 3,
+	EItemFlags_IsAwakened = 1 << 4,
+	EItemFlags_IsCrafted = 1 << 5,
+
+	EItemFlags_MAX
 };
 
 #endif

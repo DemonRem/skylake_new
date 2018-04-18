@@ -139,7 +139,23 @@ struct MemoryStream {
 	inline void WritePos() {
 		w_u16(_raw, _pos);
 	}
+	inline void WriteUID(UID id) {
+		w_u64(_raw + _pos, id.id); _pos += 8;
+	}
 
+	inline void Read(UINT8 *out, UINT16 size) {
+		if (size > _size - _pos)
+		{
+			INT16 temp = (_size - _pos);
+
+			memcpy_s((void*)out, size, (const void*)&_raw[_pos], temp);
+			_pos = _size; //reached end of stream
+
+			return;
+		}
+		memcpy_s((void*)out, size, (const void*)&_raw[_pos], size);
+		_pos += size;
+	}
 	inline INT8 ReadInt8() {
 		return (INT8)_raw[_pos++];
 	}
@@ -198,6 +214,28 @@ struct MemoryStream {
 		}
 
 		memset(_raw, 0, sizeof(UINT16) * _size);
+	}
+	inline void Clear() {
+		if (_raw) {
+			delete[] _raw;
+			_raw = nullptr;
+		}
+
+		_size = 0;
+		_pos = 0;
+	}
+	inline INT32 Alloc(UINT16 size) {
+		INT32 delta = (_size - _pos) - size;
+		if (delta > 0 || !delta) { return 0; }
+
+		Resize((UINT16)-delta);
+
+		return -delta;
+	}
+
+	//Is End of Stream
+	inline bool IsEOS() const noexcept {
+		return _pos == _size;
 	}
 };
 #endif

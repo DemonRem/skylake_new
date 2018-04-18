@@ -60,7 +60,7 @@ struct Player {
 	GeneralPlayerStats	gStats;
 	PlayerStats			pStats;
 
-	inline const bool HasFlag(const EPlayerFlags flag) const noexcept {
+	inline const BOOL HasFlag(const EPlayerFlags flag) const noexcept {
 		return flags & flag;
 	}	
 	inline void AddFlag(const EPlayerFlags flag) noexcept {
