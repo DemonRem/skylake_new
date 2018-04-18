@@ -37,7 +37,15 @@ struct Item {
 	inline void RemoveFlag(const EItemFlags flag) noexcept {
 		flags &= !flag;
 	}
+	inline const UINT16 PassivitiesCount() const noexcept {
+		const Passivity * const* p = passivities;
+		UINT16 count = 0;
+		while (*p) {
+			p++;
+		}
 
+		return (UINT16)(p - passivities);
+	}
 	Item() :iTemplate(0) { memset(passivities, 0, sizeof(Passivity*) * ITEM_MAX_PASSIVITIES); }
 };
 

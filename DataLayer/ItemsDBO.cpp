@@ -8,31 +8,27 @@
 #include "../Models/DataStore.h"
 
 INT32 SerializeItem(Item * i, MemoryStream * data) {
+	const UINT16 pCount = i->PassivitiesCount();
+	data->Alloc(42 + (12 * pCount)); 
 
-	data->Alloc(42);
 	UINT8* ptr = (UINT8*)&i->stackCount;
 	data->Write(ptr, 40);
+	data->WriteUInt16(pCount);
 
 	Passivity ** pPtr = i->passivities;
-	UINT16 pCount = 0;
-
-	UINT16 pCountPos = data->_pos;
-	data->WriteUInt16(0); //passivitiesCount 
 	while (*pPtr) {
 		Passivity * p = *pPtr;
 
 		data->WriteUID(p->id);
-		data->WriteUInt32(p->index); //cached index value
+		data->WriteUInt32(p->index); //cached index 
 
-		pCount++;
+		pPtr++;
 	}
 
-	w_u16(data->_raw + pCountPos, pCount);
 	return 0;
 }
 
 INT32 DeserializeItem(Item * i, MemoryStream * data) {
-
 	UINT8* ptr = (UINT8*)&i->stackCount;
 	data->Read(ptr, 40);
 
@@ -41,8 +37,6 @@ INT32 DeserializeItem(Item * i, MemoryStream * data) {
 		//@TODO log
 		return 3;
 	}
-
-	memset(i->passivities, 0, sizeof(Passivity*) * ITEM_MAX_PASSIVITIES);
 
 	Passivity ** pPtr = i->passivities;
 	while (pCount) {

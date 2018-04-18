@@ -14,12 +14,12 @@
 
 #include "../DataLayer/ItemsDBO.h"
 #include "../Models/Item.h"
+#include "../Models/Passivity.h"
 
 #include <chrono>
 
 
 void ReadWriteTest() {
-
 	MemoryStream m = MemoryStream(18);
 
 	m.WriteUInt16(2);
@@ -33,6 +33,9 @@ void ReadWriteTest() {
 INT32 ItemsTests() {
 	MemoryStream m = MemoryStream();
 	Item i;
+	Passivity p;
+	p.index = 321;
+	p.id = 123;
 
 	i.stackCount = 1;
 
@@ -46,15 +49,15 @@ INT32 ItemsTests() {
 	i.itemLevel = 2;
 	i.flags = 575;
 	i.masterworkRate = 24.556f;
+	i.passivities[0] = &p;
 
 	SerializeItem(&i, &m);
 	print_packet_hex(m._raw, m._size);
 	Item j;
 	m._pos = 0;
-	DeserializeItem(&j, &m);
+	INT32 result = DeserializeItem(&j, &m);
 
-
-	return 0;
+	return result;
 }
 
 int main()
