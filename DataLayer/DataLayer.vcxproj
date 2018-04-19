@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="AccountDBO.cpp" />
     <ClCompile Include="DBO.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="ItemsDBO.cpp" />
     <ClCompile Include="MySqlDriver.cpp" />
     <ClCompile Include="PassivityCore.cpp" />

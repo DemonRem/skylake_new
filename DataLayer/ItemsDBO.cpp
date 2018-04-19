@@ -420,12 +420,13 @@ Item * CreateNonDbItem(Item * existing) {
 	}
 
 	item->id = GetNewItemUID();
-	
+
 	INT32 result = CopyItem(existing, item.get());
 	if (result) {
 		//@TODO log
 		return nullptr;
 	}
+
 
 	return item.release();
 }

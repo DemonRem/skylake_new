@@ -249,27 +249,26 @@ enum EEquipmentPart : UINT16 {
 };
 
 enum EItemTemplateFlags :UINT32 {
-	EIFChangeColorEnable = 1 << 0,
-	EIFChangeLook = 1 << 1,
-	EIFTradable = 1 << 2,
-	EIFWarehouseStoreable = 1 << 3,
-	EIFDestroyable = 1 << 4,
-	EIFDismantlable = 1 << 5,
-	EIFSellable = 1 << 6,
-	EIFObtainable = 1 << 7,
-	EIFEnchantEnable = 1 << 8,
-	EIFArtisanable = 1 << 9,
-	EIFUseOnlyByGender = 1 << 10,
-	EIFUseOnlyTerritory = 1 << 11,
-	EIFUseOnlyByRace = 1 << 12,
-	EIFHasBonus = 1 << 13,
-	EIFBankStorable = 1 << 14,
-	EIFGuildBankStorable = 1 << 15,
-	EIFUseOnlyByClass = 1 << 16,
+	EItemTemplateFlags_ChangeColorEnable = 1 << 0,
+	EItemTemplateFlags_ChangeLook = 1 << 1,
+	EItemTemplateFlags_Tradable = 1 << 2,
+	EItemTemplateFlags_WarehouseStoreable = 1 << 3,
+	EItemTemplateFlags_Destroyable = 1 << 4,
+	EItemTemplateFlags_Dismantlable = 1 << 5,
+	EItemTemplateFlags_Sellable = 1 << 6,
+	EItemTemplateFlags_Obtainable = 1 << 7,
+	EItemTemplateFlags_EnchantEnable = 1 << 8,
+	EItemTemplateFlags_Artisanable = 1 << 9,
+	EItemTemplateFlags_UseOnlyByGender = 1 << 10,
+	EItemTemplateFlags_UseOnlyTerritory = 1 << 11,
+	EItemTemplateFlags_UseOnlyByRace = 1 << 12,
+	EItemTemplateFlags_HasBonus = 1 << 13,
+	EItemTemplateFlags_BankStorable = 1 << 14,
+	EItemTemplateFlags_GuildBankStorable = 1 << 15,
+	EItemTemplateFlags_UseOnlyByClass = 1 << 16,
+	EItemTemplateFlags_IsNonDb = 1 << 17
 
 	//others come here
-
-	EIFIsNonDB = 1 << 30,
 };
 
 enum EItemFlags : ULONG {

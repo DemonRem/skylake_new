@@ -15,10 +15,11 @@ struct EquipmentSetData;
 struct EnchantSet;
 
 struct ItemTemplate {
-	UINT64	id;
-	UINT32 index;
+	UINT32		id;
+	UINT32		index;
+	UINT32		maxStack;
 
-	EItemFlags	itemFlags;
+	EItemTemplateFlags	itemFlags;
 
 	EItemBoundType		bind_type;
 	EEquipmentPart		part;
@@ -31,7 +32,7 @@ struct ItemTemplate {
 
 	float masterpieceRate;
 
-	inline const BOOL HasFlag(const EItemFlags flag) const noexcept {
+	inline const BOOL HasFlag(const EItemTemplateFlags flag) const noexcept {
 		return itemFlags & flag;
 	}
 
@@ -41,15 +42,14 @@ struct ItemTemplate {
 };
 
 struct ItemTemplateInventoryData {
-	UINT64	id;
+	UINT64		id;
 
 	FLAG		requiredClasses;
 	FLAG16		requiredRaces;
 	FLAG16		requiredGenders;
 
 	INT16		requiredLevel;
-	INT16		maxStack;
-	INT16		itemLevel;
+	INT16		enchantLevel;
 	INT16		rank;
 	INT16		sortingNumber;
 	INT16		slotLimit;

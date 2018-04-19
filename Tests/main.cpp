@@ -46,7 +46,7 @@ INT32 ItemsTests() {
 
 	i.binderDBId = 44;
 	i.crafterDBId = 55;
-	i.itemLevel = 2;
+	i.enchantLevel = 2;
 	i.flags = 575;
 	i.masterworkRate = 24.556f;
 	i.passivities[0] = &p;

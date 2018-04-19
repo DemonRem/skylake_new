@@ -10,21 +10,22 @@ struct ItemTemplate;
 struct Passivity;
 
 #define ITEM_ACTIVE_PASSIVITIES_MAX_COUNT 18
-#define ITEM_BODY_SIZE 40
+#define ITEM_BODY_SIZE 42
 
 //!!!DONT CHANCHE A THING HERE, IT WILL BREAK THE ITEM SERIALIZER/DESERIALIZER
 struct Item {
 	UID				id;  //db_uid
 
 	// SERIALIZER _START
-	INT32			stackCount;
+	UINT32			stackCount;
 	INT32			crystals[4];
 	UINT32			binderDBId;
 	UINT32			crafterDBId;
 	INT32			itemLevel;
+	UINT16			enchantLevel;
 	ULONG			flags;
 	float			masterworkRate;
-	// SERIALIZER _END [40 bytes]
+	// SERIALIZER _END [42 bytes]
 
 	ItemTemplate *	iTemplate;
 
