@@ -59,6 +59,7 @@ struct Inventory {
 
 	INT32 Init();
 
+	//######### unsafe only methods
 	INT32 InsertNonDb(UINT32 itemId, UINT32 stackCount);
 	INT32 InsertNonDb(Item * item);
 	INT32 StackNonDb(UINT32 itemId, INT32 stackCount);
@@ -73,30 +74,46 @@ struct Inventory {
 	INT32 UnequipeItem(UINT16 slotId, sql::Connection * sql);
 	INT32 EquipeCrystal(UINT16 profileSlotId, UINT16 slotId, sql::Connection * sql);
 	INT32 UnequipeCrystal(UINT16 profileSlotId, UINT64 itemId, sql::Connection * sql);
-
+	
 	INT32 Send(ConnectionNetPartial * net, bool show, bool safe);
 	INT32 SendItemLevels();
-	INT32 Clear();
-	INT32 Clear(sql::Connection* sql);
 
-	inline Item* GetProfileItem(UINT16 slotId) const noexcept {
+	INT32 GetProfilePassivities(Passivity ** outPassivities);
+
+	INT32 RefreshEnchantEffect();
+	INT32 RefreshItemsModifiers();
+	//################################################
+
+	INT32 MoveItem(UINT16 slotIdFrom, UINT16 slotIdTo) noexcept;
+	INT32 MoveItemUnsafe(UINT16 slotIdFrom, UINT16 slotIdTo) noexcept;
+	INT32 Clear(sql::Connection* sql);
+	INT32 ClearUnsafe(sql::Connection* sql);
+	inline Item* GetProfileItem(UINT16 slotId)  noexcept {
+		lock();
+		Item* item = (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item : nullptr) : nullptr;
+		unlock();
+		return item;
+	}
+	inline Item* GetProfileItemUnsafe(UINT16 slotId) const noexcept {
 		return (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item : nullptr) : nullptr;
 	}
-	inline UINT32 GetProfileItemId(UINT16 slotId) const noexcept {
+	inline UINT32 GetProfileItemId(UINT16 slotId)  noexcept {
+		lock();
+		UINT32 itemId = (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->iTemplate->id : 0) : 0;
+		unlock();
+		return itemId;
+	}
+	inline UINT32 GetProfileItemIdUnsafe(UINT16 slotId) const noexcept {
 		return (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->iTemplate->id : 0) : 0;
 	}
-	inline UINT16 GetProfileItemEnchantLevel(UINT16 slotId) const noexcept {
-		return (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->enchantLevel : 0) : 0;
+	inline UINT16 GetProfileItemEnchantLevel(UINT16 slotId)  noexcept {
+		lock();
+		UINT16 enchantLevel = (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->enchantLevel : 0) : 0;
+		unlock();
+		return enchantLevel;
 	}
-
-	inline BOOL IsFullUnsafe() const noexcept {
-		for (UINT16 i = 0; i < slotsCount; i++) {
-			if (inventorySlots[i].IsEmpty()) {
-				return FALSE;
-			}
-		}
-
-		return TRUE;
+	inline UINT16 GetProfileItemEnchantLevelUnsafe(UINT16 slotId) const noexcept {
+		return (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->enchantLevel : 0) : 0;
 	}
 	inline BOOL IsFull() {
 		lock();
@@ -111,15 +128,14 @@ struct Inventory {
 		unlock();
 		return TRUE;
 	}
-
-	INT32 GetEmptySlotUnsafe() const noexcept {
+	inline BOOL IsFullUnsafe() const noexcept {
 		for (UINT16 i = 0; i < slotsCount; i++) {
 			if (inventorySlots[i].IsEmpty()) {
-				return (UINT32)i;
+				return FALSE;
 			}
 		}
 
-		return -1;
+		return TRUE;
 	}
 	INT32 GetEmptySlot() {
 		lock();
@@ -133,20 +149,14 @@ struct Inventory {
 		unlock();
 		return -1;
 	}
-
-	INT32 GetProfilePassivities(Passivity ** outPassivities);
-
-	INT32 RefreshEnchantEffect();
-	INT32 RefreshItemsModifiers();
-
-	inline INT32 AddGoldUnsafe(UINT64 val) noexcept {
-		if (ArbiterConfig::player.maxInventoryGold < (gold + val)) {
-			return 1;
+	INT32 GetEmptySlotUnsafe() const noexcept {
+		for (UINT16 i = 0; i < slotsCount; i++) {
+			if (inventorySlots[i].IsEmpty()) {
+				return (UINT32)i;
+			}
 		}
 
-		gold += val;
-
-		return 0;
+		return -1;
 	}
 	inline INT32 AddGold(UINT64 val) noexcept {
 		lock();
@@ -160,19 +170,16 @@ struct Inventory {
 		unlock();
 		return 0;
 	}
-
-	inline  ISlot * operator[](UINT16 slotId)  noexcept {
-		if (slotId >= PLAYER_INVENTORY_MAX_SLOTS) {
-			return nullptr;
-		}
-		else if (slotId <= PLAYER_INVENTORY_PROFILE_SLOTS_COUNT) {
-			return profileSlots + slotId;
+	inline INT32 AddGoldUnsafe(UINT64 val) noexcept {
+		if (ArbiterConfig::player.maxInventoryGold < (gold + val)) {
+			return 1;
 		}
 
-		return inventorySlots + slotId;
+		gold += val;
+
+		return 0;
 	}
-
-	inline UINT32 GetItemId(UINT16 slotId) noexcept {
+	inline UINT32 GetItemIdUnsafe(UINT16 slotId) noexcept {
 		if ((slotId - 1) < 0 || (slotId - 1) >= slotsCount) {
 			return 0;
 		}
@@ -183,9 +190,22 @@ struct Inventory {
 
 		return 0;
 	}
+	inline UINT32 GetItemId(UINT16 slotId) noexcept {
+		lock();
+		if ((slotId - 1) < 0 || (slotId - 1) >= slotsCount) {
+			unlock();
+			return 0;
+		}
 
-	INT32 MoveItem(UINT16 slotIdFrom, UINT16 slotIdTo) noexcept;
+		if (!inventorySlots[slotId].IsEmpty()) {
+			UINT32 itemId = inventorySlots[slotId].item->iTemplate->id;
+			unlock();
+			return itemId;
+		}
 
+		unlock();
+		return 0;
+	}
 	inline UINT16 CountProfileItems()  noexcept {
 		UINT16 count = 0;
 		lock();
@@ -244,6 +264,16 @@ struct Inventory {
 		return 0;
 	}
 
+	inline  ISlot * operator[](UINT16 slotId)  noexcept {
+		if (slotId >= PLAYER_INVENTORY_MAX_SLOTS) {
+			return nullptr;
+		}
+		else if (slotId <= PLAYER_INVENTORY_PROFILE_SLOTS_COUNT) {
+			return profileSlots + slotId;
+		}
+
+		return inventorySlots + slotId;
+	}
 };
 
 FORCEINLINE void InterchangeItems(ISlot* slotFrom, ISlot * slotTo) noexcept {
