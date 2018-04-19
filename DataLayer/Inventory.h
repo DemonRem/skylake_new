@@ -86,8 +86,8 @@ struct Inventory {
 
 	INT32 MoveItem(UINT16 slotIdFrom, UINT16 slotIdTo) noexcept;
 	INT32 MoveItemUnsafe(UINT16 slotIdFrom, UINT16 slotIdTo) noexcept;
-	INT32 Clear(sql::Connection* sql);
-	INT32 ClearUnsafe(sql::Connection* sql);
+	INT32 Clear(sql::Connection* sql) noexcept;
+	INT32 ClearUnsafe(sql::Connection* sql) noexcept;
 	inline Item* GetProfileItem(UINT16 slotId)  noexcept {
 		lock();
 		Item* item = (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item : nullptr) : nullptr;
@@ -115,7 +115,7 @@ struct Inventory {
 	inline UINT16 GetProfileItemEnchantLevelUnsafe(UINT16 slotId) const noexcept {
 		return (((slotId) >= 0) && ((slotId) < PLAYER_INVENTORY_PROFILE_SLOTS_COUNT)) ? (profileSlots[slotId].item ? profileSlots[slotId].item->enchantLevel : 0) : 0;
 	}
-	inline BOOL IsFull() {
+	inline BOOL IsFull() noexcept {
 		lock();
 
 		for (UINT16 i = 0; i < slotsCount; i++) {
@@ -137,7 +137,7 @@ struct Inventory {
 
 		return TRUE;
 	}
-	INT32 GetEmptySlot() {
+	INT32 GetEmptySlot() noexcept {
 		lock();
 		for (UINT16 i = 0; i < slotsCount; i++) {
 			if (inventorySlots[i].IsEmpty()) {
