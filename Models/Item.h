@@ -4,10 +4,12 @@
 #include "../Base/typeDefs.h"
 #include "../Base/Enums/ItemEnums.h"
 
+#include "../Base/win32.h"
+
 struct ItemTemplate;
 struct Passivity;
 
-#define ITEM_MAX_PASSIVITIES 18
+#define ITEM_ACTIVE_PASSIVITIES_MAX_COUNT 18
 #define ITEM_BODY_SIZE 40
 
 //!!!DONT CHANCHE A THING HERE, IT WILL BREAK THE ITEM SERIALIZER/DESERIALIZER
@@ -26,9 +28,9 @@ struct Item {
 
 	ItemTemplate *	iTemplate;
 
-	Passivity*		passivities[ITEM_MAX_PASSIVITIES];
+	Passivity*		passivities[ITEM_ACTIVE_PASSIVITIES_MAX_COUNT];
 
-	Item() :iTemplate(0) { memset(passivities, 0, sizeof(Passivity*) * ITEM_MAX_PASSIVITIES); }
+	Item() :iTemplate(0) { ZeroMemory(passivities, sizeof(Passivity*) * ITEM_ACTIVE_PASSIVITIES_MAX_COUNT); }
 
 	inline const BOOL HasFlag(const EItemFlags flag) const noexcept {
 		return flags & flag;
@@ -49,7 +51,7 @@ struct Item {
 		return (UINT16)(p - passivities);
 	}
 	inline Passivity** ClearPassivities() {
-		memset(passivities, 0, sizeof(Passivity*) *ITEM_MAX_PASSIVITIES);
+		ZeroMemory(passivities, sizeof(Passivity*) * ITEM_ACTIVE_PASSIVITIES_MAX_COUNT);
 		return passivities;
 	}
 };

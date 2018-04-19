@@ -130,7 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AccountDBO.cpp" />
-    <ClCompile Include="DbHandler.cpp" />
     <ClCompile Include="DBO.cpp" />
     <ClCompile Include="ItemsDBO.cpp" />
     <ClCompile Include="MySqlDriver.cpp" />
@@ -139,7 +138,6 @@
   <ItemGroup>
     <ClInclude Include="AccountDBO.h" />
     <ClInclude Include="AchievementsDBO.h" />
-    <ClInclude Include="DbHandler.h" />
     <ClInclude Include="DBO.h" />
     <ClInclude Include="ItemsDBO.h" />
     <ClInclude Include="Inventory.h" />

@@ -81,7 +81,7 @@ INT32 DeserializeItem(Item * i, MemoryStream * data) {
 	data->Read(ptr, ITEM_BODY_SIZE);
 
 	UINT16 pCount = data->ReadUInt16();
-	if (pCount >= ITEM_MAX_PASSIVITIES) {
+	if (pCount >= ITEM_ACTIVE_PASSIVITIES_MAX_COUNT) {
 		//@TODO log
 		return 3;
 	}
@@ -218,7 +218,7 @@ Item * CreateItem(UINT64 itemId, UID playerId, sql::Connection * sql) {
 
 	return item.release();
 }
-Item * CreateItemFromTemplate(UINT64 iTemplateIndex, UID playerId, sql::Connection * sql) {
+Item * CreateItemFromTemplate(UINT32 iTemplateIndex, UID playerId, sql::Connection * sql) {
 	const ItemTemplate * iTemplate = GetItemTemplate(iTemplateIndex);
 	if (!iTemplate) {
 		//@TODO log
@@ -452,7 +452,7 @@ Item * CreateNonDbItem(UINT64 itemId, UINT32 stackCount) {
 
 	return item.release();
 }
-Item * CreateNonDbItemFromTemplate(UINT64 iTemplateIndex, UINT32 stackCount) {
+Item * CreateNonDbItemFromTemplate(UINT32 iTemplateIndex, UINT32 stackCount) {
 	const ItemTemplate * iTemplate = GetItemTemplate(iTemplateIndex);
 	if (!iTemplate) {
 		//@TODO log

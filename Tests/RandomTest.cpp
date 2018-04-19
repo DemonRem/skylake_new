@@ -7,7 +7,7 @@
 
 int RandomTest()
 {
-	srandom(time(0));
+	srandom((unsigned long)time(0));
 
 	for (size_t i = 0; i < 100; i++)
 	{

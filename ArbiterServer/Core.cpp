@@ -506,7 +506,7 @@ const BOOL InitArbiterCore() {
 	}
 
 	sql::Connection *initConn = mysqlDriver->NewConnection();
-	if (!initConn) {
+	if (!initConn || !initConn->isValid()) {
 		printf("Failed to open connection to the sql-db\n");
 		return 9;
 	}

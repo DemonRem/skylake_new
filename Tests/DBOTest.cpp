@@ -1,11 +1,10 @@
 #include "DBOTest.h"
-#include "../DataLayer/DbHandler.h"
+#include "../DataLayer/DBO.h"
 
 #include <mysql_connection.h>
 #include <exception>
 
 UINT32 DBOTest() {
-	MySqlInit();
 
 	MySqlDriver * driver = new MySqlDriver();
 	if (!driver) {

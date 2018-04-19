@@ -11,7 +11,7 @@
 INT32 InitDBO(sql::Connection * conn);
 
 static MySqlDriver driver;
-MySqlDriver* GetMysqlDriver() {
+FORCEINLINE MySqlDriver* GetMysqlDriver() {
 	return &driver;
 }
 

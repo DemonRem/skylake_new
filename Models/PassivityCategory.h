@@ -4,7 +4,8 @@
 #include "../Base/typeDefs.h"
 #include "../Base/Random.h"
 
-struct Passivity;
+#include "Passivity.h"
+
 struct PassivityCategory {
 	UID id;
 	BOOL unchangeable;

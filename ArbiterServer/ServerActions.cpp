@@ -205,6 +205,8 @@ INT32 SelectUserAction(WorkerState* w, ConnectionNetPartial* net) {
 	}
 	
 	//@TODO get world node and do the async world connect process 
+
+	return 0;
 }
 
 INT32 InitServerActions() {
